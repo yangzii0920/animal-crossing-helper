@@ -4,30 +4,31 @@ const fishApi = "https://acnhapi.com/v1a/fish";
 export default {
   data() {
     return {
-        list: [1],
+        list: [],
         fish: [],
-        price: -1
+        activeInput: ""
     }
   },
   created() {
     this.initFish()
   },
   methods: {
-    add(){
-        this.list.push(this.list.length + 1)
+    add() {
+        const find = this.fish.find(f => f["name"] === this.activeInput)
+        if (typeof find === 'undefined') {
+            alert(`can't find item ${this.activeInput}`)
+        } else {
+            this.list.push({"name": this.activeInput, "price": find["price"]})
+            this.activeInput = ""
+        }
     },
-    remove(i){
+    remove(i) {
         this.list.splice(i, 1);
     },
     async initFish() {
       this.fish = (await (await fetch(fishApi)).json()).map(f => {
-        return {"name": f["file-name"], "price": f["price"]}
-      })
-
-      const fi = this.fish.find(f => f["name"] === "bitterling")
-      if (fi !== null) {
-        this.price = JSON.parse(JSON.stringify(fi))["price"]
-      }
+            return {"name": f["name"]["name-USen"], "price": f["price"]}
+        })
     },
 
   }
@@ -35,14 +36,16 @@ export default {
 </script>
 
 <template>
-    <p v-for="(item, index) of list">{{ index }}
-        <input v-model="list[index]"> {{ item }}
-        <button v-if="index + 1 == list.length" @click="add">Add</button>
-        <button v-if="list.length > 1" @click="remove(index)">Remove</button>
+    <p v-for="(item, index) of list">
+        <input disabled v-model="item.name"> {{ item.price }}
+        <button v-if="list.length > 0" @click="remove(index)">Remove</button>
+    </p>
+    <p v-if="list.length >= 0">
+        <input v-model="activeInput">
+        <button @click="add">Add</button>
     </p>
     <br/>
-    price = {{ this.price }}
+    item = {{ list }}
     <br/>
     fish = {{ fish }}
-
 </template>
