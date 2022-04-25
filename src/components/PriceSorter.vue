@@ -30,7 +30,17 @@ export default {
             return {"name": f["name"]["name-USen"], "price": f["price"]}
         })
     },
-
+    sort() {
+        this.list.sort((item1, item2) => {
+            if (item1.price < item2.price)
+                return 1
+            if (item1.price > item2.price)
+                return -1
+            if (item1.name > item2.price)
+                return 1
+            else return -1
+        });
+    },
   }
 }
 </script>
@@ -45,7 +55,7 @@ export default {
         <button @click="add">Add</button>
     </p>
     <br/>
-    item = {{ list }}
+    <button @click="sort">Sort</button>
     <br/>
-    fish = {{ fish }}
+
 </template>
