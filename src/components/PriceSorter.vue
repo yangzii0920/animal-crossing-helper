@@ -1,6 +1,7 @@
 <script>
 import { fishService } from "@/services/FishService.ts";
 import { seaCreatureService } from "@/services/SeaCreatureService.ts";
+import { bugService } from "@/services/BugService.ts";
 
 export default {
   data() {
@@ -31,6 +32,13 @@ export default {
             return
         }
         find = seaCreatureService.findSeaCreature(this.activeInput)
+        if (typeof find !== 'undefined') {
+            this.list.push({"name": this.activeInput, "price": find["price"]})
+            this.updateLocalStorage()
+            this.activeInput = ""
+            return
+        }
+        find = bugService.findBug(this.activeInput)
         if (typeof find !== 'undefined') {
             this.list.push({"name": this.activeInput, "price": find["price"]})
             this.updateLocalStorage()
