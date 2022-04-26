@@ -1,20 +1,16 @@
 <script>
-const fishApi = "https://acnhapi.com/v1a/fish";
+import { fishService } from "@/services/FishService.ts";
 
 export default {
   data() {
     return {
         list: [],
-        fish: [],
         activeInput: ""
     }
   },
-  created() {
-    this.initFish()
-  },
   methods: {
     add() {
-        const find = this.fish.find(f => f["name"] === this.activeInput)
+        const find = fishService.findFish(this.activeInput)
         if (typeof find === 'undefined') {
             alert(`can't find item ${this.activeInput}`)
         } else {
@@ -24,11 +20,6 @@ export default {
     },
     remove(i) {
         this.list.splice(i, 1);
-    },
-    async initFish() {
-      this.fish = (await (await fetch(fishApi)).json()).map(f => {
-            return {"name": f["name"]["name-USen"], "price": f["price"]}
-        })
     },
     sort() {
         this.list.sort((item1, item2) => {
