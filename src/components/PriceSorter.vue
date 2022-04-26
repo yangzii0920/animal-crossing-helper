@@ -9,17 +9,31 @@ export default {
         activeInput: ""
     }
   },
+  created() {
+    const storedItems = localStorage.getItem('items')
+    if (storedItems !== null) {
+        this.list = JSON.parse(storedItems)
+    }
+  },
   methods: {
+    updateLocalStorage() {
+        if (this.list.length >= 0)
+            localStorage.setItem('items', JSON.stringify(this.list))
+        else
+            localStorage.removeItem('items')
+    },
     add() {
         let find = fishService.findFish(this.activeInput)
         if (typeof find !== 'undefined') {
             this.list.push({"name": this.activeInput, "price": find["price"]})
+            this.updateLocalStorage()
             this.activeInput = ""
             return
         }
         find = seaCreatureService.findSeaCreature(this.activeInput)
         if (typeof find !== 'undefined') {
             this.list.push({"name": this.activeInput, "price": find["price"]})
+            this.updateLocalStorage()
             this.activeInput = ""
             return
         }
@@ -28,6 +42,7 @@ export default {
     },
     remove(i) {
         this.list.splice(i, 1);
+        this.updateLocalStorage()
     },
     sort() {
         this.list.sort((item1, item2) => {
@@ -42,7 +57,9 @@ export default {
     },
     reset() {
         this.list = [];
-    }
+        this.updateLocalStorage()
+    },
+
   }
 }
 </script>
